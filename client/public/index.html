@@ -9,6 +9,7 @@
       name="description"
       content="Web site created using create-react-app"
     />
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -28,6 +29,12 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <df-messenger
+  intent="WELCOME"
+  chat-title="assistant"
+  agent-id="fa25f1aa-dc60-4d66-9370-94fd783faf32"
+  language-code="en"
+></df-messenger>
     <div id="root"></div>
     <!--
       This HTML file is a template.
