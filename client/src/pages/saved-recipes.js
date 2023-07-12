@@ -20,6 +20,11 @@ export const SavedRecipes = () => {
 
     fetchSavedRecipes();
   }, []);
+  const getImageName = ( url ) => {
+      
+    let imgUrl = url.split("\\")
+    return imgUrl[imgUrl.length-1]
+  }
   return (
     <div>
       <h1>Saved Recipes</h1>
@@ -30,7 +35,7 @@ export const SavedRecipes = () => {
               <h2>{recipe.name}</h2>
             </div>
             <p>{recipe.description}</p>
-            <img src={recipe.imageUrl} alt={recipe.name} />
+            <img  src={`../uploads/${getImageName(recipe.imageUrl)}`}  alt={recipe.name} />
             <p>Cooking Time: {recipe.cookingTime} minutes</p>
           </li>
         ))}

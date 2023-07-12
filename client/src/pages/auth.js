@@ -15,7 +15,7 @@ export const Auth = () => {
 const Login = () => {
   const [_, setCookies] = useCookies(["access_token"]);
 
-  const [username, setUsername] = useState("");
+  const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const Login = () => {
 
     try {
       const result = await axios.post("http://localhost:3001/auth/login", {
-        username,
+        email,
         password,
       });
 
@@ -42,12 +42,12 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <h2>Login</h2>
         <div className="form-group">
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="email">email:</label>
           <input
             type="text"
-            id="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
+            id="email"
+            value={email}
+            onChange={(event) => setemail(event.target.value)}
           />
         </div>
         <div className="form-group">
@@ -66,7 +66,7 @@ const Login = () => {
 };
 
 const Register = () => {
-  const [username, setUsername] = useState("");
+  const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
 
   const [_, setCookies] = useCookies(["access_token"]);
@@ -76,11 +76,12 @@ const Register = () => {
     event.preventDefault();
     try {
       await axios.post("http://localhost:3001/auth/register", {
-        username,
+        email,
         password,
       });
       alert("Registration Completed! Now login.");
     } catch (error) {
+      alert(error);
       console.error(error);
     }
   };
@@ -90,12 +91,12 @@ const Register = () => {
       <form onSubmit={handleSubmit}>
         <h2>Register</h2>
         <div className="form-group">
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="email">email:</label>
           <input
             type="text"
-            id="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
+            id="email"
+            value={email}
+            onChange={(event) => setemail(event.target.value)}
           />
         </div>
         <div className="form-group">

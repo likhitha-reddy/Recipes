@@ -3,8 +3,45 @@ import mongoose from "mongoose";
 import { RecipesModel } from "../models/Recipes.js";
 import { UserModel } from "../models/Users.js";
 import { verifyToken } from "./user.js";
-
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from 'url';
 const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../../../client/public/uploads"));
+
+    //cb(null, path.join(__dirname, "../../src/uploads"));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Math.random()+ file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+  fileFilter: fileFilter,
+});
+
+
+
+
+
+
 
 router.get("/", async (req, res) => {
   try {
@@ -16,14 +53,14 @@ router.get("/", async (req, res) => {
 });
 
 // Create a new recipe
-router.post("/", verifyToken, async (req, res) => {
+router.post("/", upload.single('imageUrl'), async (req, res) => {
+  console.log(req.body);
   const recipe = new RecipesModel({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
-    image: req.body.image,
     ingredients: req.body.ingredients,
     instructions: req.body.instructions,
-    imageUrl: req.body.imageUrl,
+    imageUrl: req.file.path,
     cookingTime: req.body.cookingTime,
     userOwner: req.body.userOwner,
   });
@@ -34,7 +71,7 @@ router.post("/", verifyToken, async (req, res) => {
     res.status(201).json({
       createdRecipe: {
         name: result.name,
-        image: result.image,
+        imageUrl:result.imageUrl,
         ingredients: result.ingredients,
         instructions: result.instructions,
         _id: result._id,

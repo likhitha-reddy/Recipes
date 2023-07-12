@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-
 import axios from "axios";
+
 import { useGetUserID } from "../hooks/useGetUserID";
 export const Home = () => {
   const [recipes, setRecipes] = useState([]);
@@ -17,6 +17,7 @@ export const Home = () => {
         console.log(err);
       }
     };
+   
 
     const fetchSavedRecipes = async () => {
       try {
@@ -46,6 +47,11 @@ export const Home = () => {
   };
 
   const isRecipeSaved = (id) => savedRecipes.includes(id);
+  const getImageName = ( url ) => {
+      
+    let imgUrl = url.split("\\")
+    return imgUrl[imgUrl.length-1]
+  }
 
   return (
     <div>
@@ -65,11 +71,11 @@ export const Home = () => {
             <div className="instructions">
               <p>{recipe.instructions}</p>
             </div>
-            <img src={recipe.imageUrl} alt={recipe.name} />
+            <img src={`../uploads/${getImageName(recipe.imageUrl)}`} alt={recipe.name} />
             <p>Cooking Time: {recipe.cookingTime} minutes</p>
           </li>
         ))}
-      </ul>
+      </ul> 
     </div>
   );
 };

@@ -1,37 +1,42 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-
 const router = express.Router();
 import { UserModel } from "../models/Users.js";
 
 router.post("/register", async (req, res) => {
-  const { username, password } = req.body;
-  const user = await UserModel.findOne({ username });
+  const { email, password } = req.body;
+  const user = await UserModel.findOne({ email });
   if (user) {
-    return res.status(400).json({ message: "Username already exists" });
-  }
+    return res.status(400).json({ message: "email already exists" });
+  }try{
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new UserModel({ username, password: hashedPassword });
+  const newUser = new UserModel({ email, password: hashedPassword });
   await newUser.save();
   res.json({ message: "User registered successfully" });
+  }
+  catch(error)
+  {
+    console.log(error);
+    res.json(error);
+  }
 });
 
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  const user = await UserModel.findOne({ username });
+  const user = await UserModel.findOne({ email });
 
   if (!user) {
     return res
       .status(400)
-      .json({ message: "Username or password is incorrect" });
+      .json({ message: "email or password is incorrect" });
   }
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     return res
       .status(400)
-      .json({ message: "Username or password is incorrect" });
+      .json({ message: "email or password is incorrect" });
   }
   const token = jwt.sign({ id: user._id }, "secret");
   res.json({ token, userID: user._id });

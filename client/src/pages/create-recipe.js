@@ -12,7 +12,7 @@ export const CreateRecipe = () => {
     description: "",
     ingredients: [],
     instructions: "",
-    imageUrl: "",
+    imageUrl: '',
     cookingTime: 0,
     userOwner: userID,
   });
@@ -35,16 +35,25 @@ export const CreateRecipe = () => {
     const ingredients = [...recipe.ingredients, ""];
     setRecipe({ ...recipe, ingredients });
   };
+  const onFileChange = (e) => {
+    const img =   e.target.files[0] ;
+    setRecipe({ ...recipe, imageUrl:img });
+  };
 
   const handleSubmit = async (event) => {
+   // event.preventDefault()
+    //console.log(recipe)
     event.preventDefault();
     try {
       await axios.post(
         "http://localhost:3001/recipes",
-        { ...recipe },
-        {
-          headers: { authorization: cookies.access_token },
-        }
+        recipe,
+        {headers: {
+          "content-type": "application/json",
+          "content-type": "multipart/form-data",
+          authorization:cookies.access_token
+      }}
+       
       );
 
       alert("Recipe Created");
@@ -52,6 +61,7 @@ export const CreateRecipe = () => {
     } catch (error) {
       console.error(error);
     }
+   
   };
 
   return (
@@ -95,11 +105,11 @@ export const CreateRecipe = () => {
         ></textarea>
         <label htmlFor="imageUrl">Image URL</label>
         <input
-          type="text"
+          type="file"
           id="imageUrl"
           name="imageUrl"
-          value={recipe.imageUrl}
-          onChange={handleChange}
+        
+          onChange={onFileChange}
         />
         <label htmlFor="cookingTime">Cooking Time (minutes)</label>
         <input
